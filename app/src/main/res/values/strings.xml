@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">RWQRcode</string>
+    <string name="send_email">send email</string>
+    <string name="qr_code">qr code</string>
+    <string name="enter_your_info">enter your info</string>
+    <string name="generate_qr_code">generate qr code</string>
+    <string name="scan_barcode">scan barcode</string>
+    <string name="generate_barcode">generate barcode</string>
+    <string name="interpreter">Interpreter</string>
+    <string name="send_to_mail">SEND TO MAIL</string>
+</resources>
