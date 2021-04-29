@@ -1,83 +1,157 @@
 package com.bharadwaj.rwqrcode;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.graphics.Bitmap;
-import android.graphics.Point;
+
+import android.media.MediaScannerConnection;
+
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.Environment;
 import android.util.Log;
-import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import androidmads.library.qrgenearator.QRGContents;
-import androidmads.library.qrgenearator.QRGEncoder;
+import com.google.zxing.common.BitMatrix;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 
 public class GenerateQRcode extends AppCompatActivity {
-    private ImageView qrCodeIV;
-    private EditText dataEdt;
-    private Button generateQrBtn;
-    Bitmap bitmap;
-    QRGEncoder qrgEncoder;
+    public final static int QRcodeWidth = 500 ;
+    private static final String IMAGE_DIRECTORY = "/RWQRCode";
+    Bitmap bitmap ;
+    private EditText etqr;
+    private ImageView iv;
+    private Button btn;
+    private static final String TOAST_TEXT = "Generator Your Own QR Code";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_q_rcode);
-        qrCodeIV = findViewById(R.id.idIVQrcode);
-        dataEdt = findViewById(R.id.idEdt);
-        generateQrBtn = findViewById(R.id.idBtnGenerateQR);
 
-        // initializing onclick listener for button.
-        generateQrBtn.setOnClickListener(new View.OnClickListener() {
+
+        // Toasts the test ad message on the screen. Remove this after defining your own ad unit ID.
+        Toast.makeText(this, TOAST_TEXT, Toast.LENGTH_LONG).show();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        iv = (ImageView) findViewById(R.id.iv);
+        etqr = (EditText) findViewById(R.id.etqr);
+        btn=(Button)findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(dataEdt.getText().toString())) {
-
-                    // if the edittext inputs are empty then execute
-                    // this method showing a toast message.
-                    Toast.makeText(GenerateQRcode.this, "Enter some text to generate QR Code", Toast.LENGTH_SHORT).show();
-                } else {
-                    // below line is for getting
-                    // the windowmanager service.
-                    WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-                    // initializing a variable for default display.
-                    Display display = manager.getDefaultDisplay();
-
-                    // creating a variable for point which
-                    // is to be displayed in QR Code.
-                    Point point = new Point();
-                    display.getSize(point);
-
-                    // getting width and
-                    // height of a point
-                    int width = point.x;
-                    int height = point.y;
-
-                    // generating dimension from width and height.
-                    int dimen = width < height ? width : height;
-                    dimen = dimen * 3 / 4;
-
-                    // setting this dimensions inside our qr code
-                    // encoder to generate our qr code.
-                    qrgEncoder = new QRGEncoder(dataEdt.getText().toString(), null, QRGContents.Type.TEXT, dimen);
+            public void onClick(View view) {
+                Toast.makeText(GenerateQRcode.this,"QRCode is creating",Toast.LENGTH_LONG).show();
+                if(etqr.getText().toString().trim().length() == 0){
+                    Toast.makeText(GenerateQRcode.this, "Enter String!", Toast.LENGTH_SHORT).show();
+                }else {
                     try {
-                        // getting our qrcode in the form of bitmap.
-                        bitmap = qrgEncoder.encodeAsBitmap();
-                        // the bitmap is set inside our image
-                        // view using .setimagebitmap method.
-                        qrCodeIV.setImageBitmap(bitmap);
+                        bitmap = TextToImageEncode(etqr.getText().toString());
+                        iv.setImageBitmap(bitmap);
+                        String path = saveImage(bitmap);  //give read write permission
+                       // Toast.makeText(GenerateQRcode.this, "QRCode saved to -> "+path, Toast.LENGTH_SHORT).show();
                     } catch (WriterException e) {
-                        // this method is called for
-                        // exception handling.
-                        Log.e("Tag", e.toString());
+                        e.printStackTrace();
                     }
+
                 }
             }
         });
     }
+    private String saveImage(Bitmap myBitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File wallpaperDirectory = new File(
+                Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
+        // have the object build the directory structure, if needed.
+
+        if (!wallpaperDirectory.exists()) {
+            Log.d("dir", "" + wallpaperDirectory.mkdirs());
+            wallpaperDirectory.mkdirs();
+        }
+
+        try {
+            File f = new File(wallpaperDirectory, Calendar.getInstance()
+                    .getTimeInMillis() + ".jpg");
+            f.createNewFile();   //give read write permission
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+            MediaScannerConnection.scanFile(this,
+                    new String[]{f.getPath()},
+                    new String[]{"image/jpeg"}, null);
+            fo.close();
+            Log.d("TAG", "Image Is Saved at " + f.getAbsolutePath());
+
+            return f.getAbsolutePath();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return "";
+    }
+    private Bitmap TextToImageEncode(String Value) throws WriterException {
+        BitMatrix bitMatrix;
+        try {
+            bitMatrix = new MultiFormatWriter().encode(
+                    Value,
+                    BarcodeFormat.DATA_MATRIX.QR_CODE,
+                    QRcodeWidth, QRcodeWidth, null
+            );
+
+        } catch (IllegalArgumentException Illegalargumentexception) {
+
+            return null;
+        }
+        int bitMatrixWidth = bitMatrix.getWidth();
+
+        int bitMatrixHeight = bitMatrix.getHeight();
+
+        int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
+
+        for (int y = 0; y < bitMatrixHeight; y++) {
+            int offset = y * bitMatrixWidth;
+
+            for (int x = 0; x < bitMatrixWidth; x++) {
+
+                pixels[offset + x] = bitMatrix.get(x, y) ?
+                        getResources().getColor(R.color.black):getResources().getColor(R.color.white);
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
+
+        bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
+        return bitmap;
+    }
+
+
+  /*  @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_gener, menu);
+        return true;
+    }*/
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if(id== android.R.id.home){
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

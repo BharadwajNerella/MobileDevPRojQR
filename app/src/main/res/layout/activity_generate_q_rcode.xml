@@ -6,39 +6,33 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".GenerateQRcode">
 
-<!--We are using this image
-    view to display our QR code-->
-<ImageView
-    android:id="@+id/idIVQrcode"
-    android:layout_width="300dp"
-    android:layout_height="300dp"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="50dp"
-    android:contentDescription="@string/qr_code" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/etqr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Enter The String To Generate QRCode" />
 
-<!--Edit text to enter text
-    for creating a QR code-->
-<EditText
-    android:id="@+id/idEdt"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/idIVQrcode"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="30dp"
-    android:layout_marginEnd="20dp"
-    android:autofillHints=""
-    android:hint="@string/enter_your_info"
-    android:inputType="text" />
+        <Button
+            android:id="@+id/btn"
+            android:background="@drawable/button_shape"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Generate QRCode" />
 
-<!--Button for creating a QR code-->
-<Button
-    android:id="@+id/idBtnGenerateQR"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/idEdt"
-    android:layout_marginStart="20dp"
-    android:layout_marginTop="30dp"
-    android:layout_marginEnd="20dp"
-    android:text="@string/generate_qr_code" />
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher" />
 
+    </LinearLayout>
 </RelativeLayout>
