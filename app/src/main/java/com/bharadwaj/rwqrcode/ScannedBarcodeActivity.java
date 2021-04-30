@@ -159,7 +159,7 @@ public class ScannedBarcodeActivity  extends AppCompatActivity implements ZXingS
         builder.setPositiveButton("Copy Text", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                /*mScannerView.resumeCameraPreview(QrCodeScannerActivity.this);*/
+
                 ((ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE))
                         .setText(rawResult.getText().toString());
                 Toast.makeText(ScannedBarcodeActivity.this, "Copied to ClipBoard Successfully..!", Toast.LENGTH_LONG).show();

@@ -34,19 +34,18 @@ public class Interpreter extends AppCompatActivity implements View.OnClickListen
     //initialize variables to make them global
     private ImageButton Scan;
     private static final int SELECT_PHOTO = 100;
-    //for easy manipulation of the result
     public String barcode;
 
-    //call oncreate method
+    //calling the oncreate method here
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interpreter);
 
-        //cast neccesary variables to their views
+        //call the neccesary variables to their respective views
         Scan = (ImageButton) findViewById(R.id.ScanBut);
 
-        //set a new custom listener
+        // listener set up
         Scan.setOnClickListener(this);
         //launch gallery via intent
         Intent photoPic = new Intent(Intent.ACTION_PICK);
@@ -54,7 +53,7 @@ public class Interpreter extends AppCompatActivity implements View.OnClickListen
         startActivityForResult(photoPic, SELECT_PHOTO);
     }
 
-    //do necessary coding for each ID
+    //override method
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -67,28 +66,28 @@ public class Interpreter extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    //call the onactivity result method
+    //calling the on-activity result method
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK) {
-//doing some uri parsing
+
                     Uri selectedImage = imageReturnedIntent.getData();
                     InputStream imageStream = null;
                     try {
-                        //getting the image
+                        //here we are getting the image
                         imageStream = getContentResolver().openInputStream(selectedImage);
                     } catch (FileNotFoundException e) {
                         Toast.makeText(getApplicationContext(), "File not found", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-                    //decoding bitmap
+                    //here we are decoding bitmap
                     Bitmap bMap = BitmapFactory.decodeStream(imageStream);
                     Scan.setImageURI(selectedImage);// To display selected image in image view
                     int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
-                    // copy pixel data from the Bitmap into the 'intArray' array
+
                     bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(),
                             bMap.getHeight());
 
@@ -96,18 +95,17 @@ public class Interpreter extends AppCompatActivity implements View.OnClickListen
                             bMap.getHeight(), intArray);
                     BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
-                    Reader reader = new MultiFormatReader();// use this otherwise
-                    // ChecksumException
+                    Reader reader = new MultiFormatReader();
                     try {
                         Hashtable<DecodeHintType, Object> decodeHints = new Hashtable<DecodeHintType, Object>();
                         decodeHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
                         decodeHints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
 
                         Result result = reader.decode(bitmap, decodeHints);
-                        //*I have created a global string variable by the name of barcode to easily manipulate data across the application*//
+
                         barcode = result.getText().toString();
 
-                        //do something with the results for demo i created a popup dialog
+                        //pops up the scan result
                         if (barcode != null) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(this);
                             builder.setTitle("Scan Result");
@@ -144,7 +142,7 @@ public class Interpreter extends AppCompatActivity implements View.OnClickListen
                             alert1.show();
 
                         }
-                        //the end of do something with the button statement.
+
 
                     } catch (NotFoundException e) {
                         Toast.makeText(getApplicationContext(), "Nothing Found", Toast.LENGTH_SHORT).show();

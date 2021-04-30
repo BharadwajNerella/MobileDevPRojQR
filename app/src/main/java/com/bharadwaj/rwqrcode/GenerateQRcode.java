@@ -43,7 +43,6 @@ public class GenerateQRcode extends AppCompatActivity {
         setContentView(R.layout.activity_generate_q_rcode);
 
 
-        // Toasts the test ad message on the screen. Remove this after defining your own ad unit ID.
         Toast.makeText(this, TOAST_TEXT, Toast.LENGTH_LONG).show();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,7 +60,7 @@ public class GenerateQRcode extends AppCompatActivity {
                         bitmap = TextToImageEncode(etqr.getText().toString());
                         iv.setImageBitmap(bitmap);
                         String path = saveImage(bitmap);  //give read write permission
-                       // Toast.makeText(GenerateQRcode.this, "QRCode saved to -> "+path, Toast.LENGTH_SHORT).show();
+
                     } catch (WriterException e) {
                         e.printStackTrace();
                     }
@@ -75,7 +74,7 @@ public class GenerateQRcode extends AppCompatActivity {
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
         File wallpaperDirectory = new File(
                 Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
-        // have the object build the directory structure, if needed.
+        //  the object build the directory structure in this line.
 
         if (!wallpaperDirectory.exists()) {
             Log.d("dir", "" + wallpaperDirectory.mkdirs());
@@ -135,18 +134,10 @@ public class GenerateQRcode extends AppCompatActivity {
     }
 
 
-  /*  @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_gener, menu);
-        return true;
-    }*/
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will    fh
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if(id== android.R.id.home){
             this.finish();
