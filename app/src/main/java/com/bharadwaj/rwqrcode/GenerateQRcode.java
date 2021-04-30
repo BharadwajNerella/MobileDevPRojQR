@@ -59,7 +59,7 @@ public class GenerateQRcode extends AppCompatActivity {
                     try {
                         bitmap = TextToImageEncode(etqr.getText().toString());
                         iv.setImageBitmap(bitmap);
-                        String path = saveImage(bitmap);  //give read write permission
+                        String path = saveImage(bitmap);  //give read and write permission
 
                     } catch (WriterException e) {
                         e.printStackTrace();
@@ -74,7 +74,7 @@ public class GenerateQRcode extends AppCompatActivity {
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
         File wallpaperDirectory = new File(
                 Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
-        //  the object build the directory structure in this line.
+        //  the object will build the directory structure in this above line.
 
         if (!wallpaperDirectory.exists()) {
             Log.d("dir", "" + wallpaperDirectory.mkdirs());
@@ -84,7 +84,7 @@ public class GenerateQRcode extends AppCompatActivity {
         try {
             File f = new File(wallpaperDirectory, Calendar.getInstance()
                     .getTimeInMillis() + ".jpg");
-            f.createNewFile();   //give read write permission
+            f.createNewFile();   //give read and write permission
             FileOutputStream fo = new FileOutputStream(f);
             fo.write(bytes.toByteArray());
             MediaScannerConnection.scanFile(this,

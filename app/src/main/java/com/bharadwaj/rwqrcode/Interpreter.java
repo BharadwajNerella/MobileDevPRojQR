@@ -31,7 +31,7 @@ import java.util.Hashtable;
 
 public class Interpreter extends AppCompatActivity implements View.OnClickListener {
 
-    //initialize variables to make them global
+    //initializes the variables to make global
     private ImageButton Scan;
     private static final int SELECT_PHOTO = 100;
     public String barcode;
@@ -47,7 +47,7 @@ public class Interpreter extends AppCompatActivity implements View.OnClickListen
 
         // listener set up
         Scan.setOnClickListener(this);
-        //launch gallery via intent
+        //launch gallery via intent statement
         Intent photoPic = new Intent(Intent.ACTION_PICK);
         photoPic.setType("image/*");
         startActivityForResult(photoPic, SELECT_PHOTO);
